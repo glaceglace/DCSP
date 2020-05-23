@@ -25,20 +25,19 @@ class _State extends State<MyApp> {
   final double _pie = 3.14159;
 
   void calculate() {
-
-    double alpha = (this._vor1 - this._vor2).abs();
-    double beta = (((_heading + _vor1) % 360) - 180 - _azimuth1To2).abs() % 360;
+    double alpha = (this._vor1 - this._vor2).abs() % 180;
+    double beta = (((_heading + _vor1) % 360) + 180 - _azimuth1To2 + 360) % 180;
     double gamma = 180 - alpha - beta;
 
     double vor2ToDis =
         sin(beta * this._pie / 180) * _distance / sin(alpha * this._pie / 180);
     double vor1ToODis =
         sin(gamma * this._pie / 180) * _distance / sin(alpha * this._pie / 180);
-    double az2ToO = (this._heading + this._vor1) % 360 - _azimuth1To2;
-    double az1ToO = az2ToO + _heading;
-print("alpha:$alpha");
-print("beta:$beta");
-print("gamma:$gamma");
+    double az2ToO = (this._heading + this._vor1 +this._vor1 - this._vor2 + 360) % 360;
+    double az1ToO = (this._heading + this._vor1 + 180) % 360;
+    print("alpha:$alpha");
+    print("beta:$beta");
+    print("gamma:$gamma");
     this.setState(() {
       this._vor2ToODis = vor2ToDis;
       this._vor1ToODis = vor1ToODis;
@@ -62,9 +61,8 @@ print("gamma:$gamma");
               children: [
                 getMultipleNeedleExample(false, _heading, _vor1, _vor2),
                 Container(
-                  width: 500,
-                  child: Column(
-                      
+                    width: 500,
+                    child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           Slider(
@@ -115,9 +113,7 @@ print("gamma:$gamma");
                               semanticFormatterCallback: (double newValue) {
                                 return '${newValue.round()}';
                               })
-                        ])
-                  
-                )
+                        ]))
               ],
             ),
             Row(
@@ -178,8 +174,7 @@ print("gamma:$gamma");
               onPressed: () {
                 this.calculate();
               },
-              child:
-                  const Text('Calculate', style: TextStyle(fontSize: 20)),
+              child: const Text('Calculate', style: TextStyle(fontSize: 20)),
             ),
             const SizedBox(
               height: 30,
